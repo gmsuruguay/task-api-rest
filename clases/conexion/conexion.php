@@ -71,4 +71,8 @@ class Conexion{
         
     }
 
+    protected function encrypt($pass){
+        return md5($pass);
+    }
+
 }

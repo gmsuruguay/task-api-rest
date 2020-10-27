@@ -37,11 +37,11 @@ class Response
         return $this->response;
     } */
 
-    public function sendResponse($code){
+    public function sendResponse($code , $msg = null){
         $this->response['status'] = $code == 200 ? 'Ok' : 'Error';
         $this->response['result'] = [
             'error_id' => $code,
-            'error_msg' => $this->_getStatusCodeMessage($code)
+            'error_msg' => $msg ?? $this->_getStatusCodeMessage($code)
         ];
 
         return $this->response;

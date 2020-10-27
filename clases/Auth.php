@@ -16,11 +16,21 @@ class Auth extends Conexion{
         }
 
         $usuario = $data['usuario']; 
-        $password = $data['password'];
+        $password = parent::encrypt($data['password']);
         $data = $this->getDataUser($usuario);
 
-        if ($data) {
-        
+        if ($data) {            
+            if ($data[0]['password'] == $password) {
+                if ($data[0]['status'] == 1) { // Verificar si el usuario esta activo
+                    # code...
+                } else {
+                    return $response->sendResponse(200, "Usuario inactivo");
+                }
+                
+                
+            } else {
+                return $response->sendResponse(200, "Passwod Invalido");
+            }       
         } else {
             return $response->sendResponse(401);
         }
