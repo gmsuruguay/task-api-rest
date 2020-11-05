@@ -2,7 +2,7 @@
 
 class Response
 {
-    private $response = [
+    public $response = [
         'status' => 'ok',
         'result' => []
     ];
@@ -38,6 +38,7 @@ class Response
     } */
 
     public function sendResponse($code , $msg = null){
+        
         $this->response['status'] = $code == 200 ? 'Ok' : 'Error';
         $this->response['result'] = [
             'error_id' => $code,
