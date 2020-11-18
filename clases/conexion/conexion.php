@@ -63,7 +63,7 @@ class Conexion{
     public function nonQueryId($sql){
         $results = $this->conexion->query($sql);
         $filas = $this->conexion->affected_rows;
-        if ($filas > 1) {
+        if ($filas > 0) {
             return $this->conexion->insert_id;
         } else {
            return 0;

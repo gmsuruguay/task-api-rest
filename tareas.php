@@ -9,6 +9,8 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 switch ($method) {
     case 'GET':
+        header('Content-Type: aplication/json');
+        http_response_code(200);
         if(isset($_GET['page'])){
             $page = $_GET['page'];
             $data = $tarea->getList($page);
@@ -20,7 +22,18 @@ switch ($method) {
         }
         break;
     case 'POST':
-        # code...
+        $postBody = file_get_contents('php://input');
+        $data = $tarea->post($postBody);
+        // Respuesta
+        header('Content-Type: aplication/json');
+        if (isset($data['result']['error_id'])) {
+            $code = $data['result']['error_id'];
+            http_response_code($code);
+        } else {
+            http_response_code(200);
+        }
+        
+        echo json_encode($data);
         break;
     case 'PUT':
         # code...
