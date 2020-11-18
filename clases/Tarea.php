@@ -7,6 +7,7 @@ class Tarea extends Conexion{
     private $table = 'tareas';   
     private $descripcion = '';
     private $planId = '';
+    private $id;
 
     public function getList($page = 1){
         $init = 0;
@@ -56,4 +57,37 @@ class Tarea extends Conexion{
         $resp = parent::nonQueryId($query);       
         return $resp ?? 0 ;
     }
+
+    public function put($postBody){
+        $response = new Response();
+        $data = json_decode($postBody,true);
+        if (!isset($data['id'])) {
+           return $response->sendResponse(400);
+        }else{
+            $this->id = $data['id'];
+            $this->descripcion = $data['descripcion'];
+            $this->planId = $data['plan_id'];
+            $resp = $this->update();
+            
+            if ($resp) {
+                $result = $response->response;
+                $result['result'] = [
+                    'data' => $data
+                ];
+                return $result;
+            } else {
+                return $response->sendResponse(500);
+            }
+            
+        }
+    }
+
+    private function update(){        
+        $query = "UPDATE ".$this->table." SET descripcion = '$this->descripcion', plan_id = $this->planId WHERE id = $this->id";
+        $resp = parent::nonQuery($query);
+        
+        return ($resp > 0) ? true : false;
+    }
+
+
 }

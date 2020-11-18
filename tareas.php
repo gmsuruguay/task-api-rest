@@ -36,7 +36,18 @@ switch ($method) {
         echo json_encode($data);
         break;
     case 'PUT':
-        # code...
+        $postBody = file_get_contents('php://input');
+        $data = $tarea->put($postBody);
+        // Respuesta
+        header('Content-Type: aplication/json');
+        if (isset($data['result']['error_id'])) {
+            $code = $data['result']['error_id'];
+            http_response_code($code);
+        } else {
+            http_response_code(200);
+        }
+        
+        echo json_encode($data);
         break; 
     case 'DELETE':
         # code...
