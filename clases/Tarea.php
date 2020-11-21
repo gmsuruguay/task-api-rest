@@ -82,10 +82,40 @@ class Tarea extends Conexion{
         }
     }
 
+    public function delete($postBody){
+        $response = new Response();
+        $data = json_decode($postBody,true);
+        if (!isset($data['id'])) {
+           return $response->sendResponse(400);
+        }else{
+            $this->id = $data['id'];            
+            $resp = $this->deleteTask();
+            
+            if ($resp) {
+                $result = $response->response;
+                $result['result'] = [
+                    'id' => $this->id
+                ];
+                return $result;
+            } else {
+                return $response->sendResponse(500);
+            }
+            
+        }
+    }
+
     private function update(){        
         $query = "UPDATE ".$this->table." SET descripcion = '$this->descripcion', plan_id = $this->planId WHERE id = $this->id";
         $resp = parent::nonQuery($query);
         
+        return ($resp > 0) ? true : false;
+    }
+
+    
+
+    private function deleteTask(){        
+        $query = "DELETE FROM " . $this->table . " WHERE id =  $this->id";
+        $resp = parent::nonQuery($query);        
         return ($resp > 0) ? true : false;
     }
 
