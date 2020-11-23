@@ -50,7 +50,19 @@ switch ($method) {
         echo json_encode($data);
         break; 
     case 'DELETE':
-        $postBody = file_get_contents('php://input');
+        $headers = getallheaders();
+       
+        if (isset($headers['token']) && isset($headers['id'])) {
+           $send = [
+               'token' => $headers['token'],
+               'id' => $headers['id']
+           ];
+           $postBody = json_encode($send);
+        } else {
+            $postBody = file_get_contents('php://input');
+        }       
+        
+       
         $data = $tarea->delete($postBody);
         // Respuesta
         header('Content-Type: aplication/json');
