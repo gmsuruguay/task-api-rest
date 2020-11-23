@@ -1,6 +1,7 @@
 <?php
 require_once("conexion/Conexion.php");
 require_once("Response.php");
+require_once("Auth.php");
 
 class Tarea extends Conexion{
 
@@ -31,25 +32,38 @@ class Tarea extends Conexion{
 
     public function post($postBody){
         $response = new Response();
+        $auth = new Auth();
         $data = json_decode($postBody,true);
-        if (!isset($data['descripcion']) || !isset($data['plan_id']) ) {
-           return $response->sendResponse(400);
-        }else{
-            $this->descripcion = $data['descripcion'];
-            $this->planId = $data['plan_id'];
-            $resp = $this->insert();
-            
-            if ($resp) {
-                $result = $response->response;
-                $result['result'] = [
-                    'id' => $resp
-                ];
-                return $result;
+
+        if (!isset($data['token'])) {
+            return $response->sendResponse(401);
+        } else {
+            if ($auth->checkToken($data['token'])) {
+                if (!isset($data['descripcion']) || !isset($data['plan_id']) ) {
+                    return $response->sendResponse(400);
+                 }else{
+                     $this->descripcion = $data['descripcion'];
+                     $this->planId = $data['plan_id'];
+                     $resp = $this->insert();
+                     
+                     if ($resp) {
+                         $result = $response->response;
+                         $result['result'] = [
+                             'id' => $resp
+                         ];
+                         return $result;
+                     } else {
+                         return $response->sendResponse(500);
+                     }
+                     
+                 }
             } else {
-                return $response->sendResponse(500);
+                return $response->sendResponse(401);
             }
             
+            
         }
+        
     }
 
     private function insert(){        
@@ -60,48 +74,69 @@ class Tarea extends Conexion{
 
     public function put($postBody){
         $response = new Response();
+        $auth = new Auth();
         $data = json_decode($postBody,true);
-        if (!isset($data['id'])) {
-           return $response->sendResponse(400);
-        }else{
-            $this->id = $data['id'];
-            $this->descripcion = $data['descripcion'];
-            $this->planId = $data['plan_id'];
-            $resp = $this->update();
-            
-            if ($resp) {
-                $result = $response->response;
-                $result['result'] = [
-                    'data' => $data
-                ];
-                return $result;
-            } else {
-                return $response->sendResponse(500);
+        if (!isset($data['token'])) {
+            return $response->sendResponse(401);
+        } else {
+            if ($auth->checkToken($data['token'])) {
+
+                if (!isset($data['id'])) {
+                    return $response->sendResponse(400);
+                 }else{
+                     $this->id = $data['id'];
+                     $this->descripcion = $data['descripcion'];
+                     $this->planId = $data['plan_id'];
+                     $resp = $this->update();
+                     
+                     if ($resp) {
+                         $result = $response->response;
+                         $result['result'] = [
+                             'data' => $data
+                         ];
+                         return $result;
+                     } else {
+                         return $response->sendResponse(500);
+                     }
+                     
+                 }
+
+            }else{
+                return $response->sendResponse(401);
             }
-            
-        }
+        }        
     }
 
     public function delete($postBody){
         $response = new Response();
+        $auth = new Auth();
         $data = json_decode($postBody,true);
-        if (!isset($data['id'])) {
-           return $response->sendResponse(400);
-        }else{
-            $this->id = $data['id'];            
-            $resp = $this->deleteTask();
-            
-            if ($resp) {
-                $result = $response->response;
-                $result['result'] = [
-                    'id' => $this->id
-                ];
-                return $result;
-            } else {
-                return $response->sendResponse(500);
+        if (!isset($data['token'])) {
+            return $response->sendResponse(401);
+        } else {
+            if ($auth->checkToken($data['token'])) {
+                if (!isset($data['id'])) {
+                    return $response->sendResponse(400);
+                 }else{
+                     $this->id = $data['id'];            
+                     $resp = $this->deleteTask();
+                     
+                     if ($resp) {
+                         $result = $response->response;
+                         $result['result'] = [
+                             'id' => $this->id
+                         ];
+                         return $result;
+                     } else {
+                         return $response->sendResponse(500);
+                     }
+                     
+                 }
+            }else{
+                return $response->sendResponse(401);
             }
-            
-        }
+        }    
+        
     }
 
     private function update(){        

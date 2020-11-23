@@ -72,4 +72,14 @@ class Auth extends Conexion{
             return 0;
         }
     }
+
+    public function checkToken($token){
+        $status = self::ACTIVO;
+        $query = "SELECT * FROM users_token WHERE token = '$token' AND status = $status ";
+        $data = parent::obtenerDatos($query);
+        if (isset($data[0]['id'])) {
+            return true;
+        } 
+        return false;        
+    }
 }
