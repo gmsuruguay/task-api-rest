@@ -38,7 +38,10 @@ class Tarea extends Conexion{
         if (!isset($data['token'])) {
             return $response->sendResponse(401);
         } else {
-            if ($auth->checkToken($data['token'])) {
+
+            $verifyToken = $auth->checkToken($data['token']);
+
+            if ($verifyToken['status']) {
                 if (!isset($data['descripcion']) || !isset($data['plan_id']) ) {
                     return $response->sendResponse(400);
                  }else{
@@ -58,7 +61,7 @@ class Tarea extends Conexion{
                      
                  }
             } else {
-                return $response->sendResponse(401);
+                return $response->sendResponse(401, $verifyToken['msg']);
             }
             
             
@@ -79,7 +82,8 @@ class Tarea extends Conexion{
         if (!isset($data['token'])) {
             return $response->sendResponse(401);
         } else {
-            if ($auth->checkToken($data['token'])) {
+            $verifyToken = $auth->checkToken($data['token']);
+            if ($verifyToken['status']) {
 
                 if (!isset($data['id'])) {
                     return $response->sendResponse(400);
@@ -102,7 +106,7 @@ class Tarea extends Conexion{
                  }
 
             }else{
-                return $response->sendResponse(401);
+                return $response->sendResponse(401, $verifyToken['msg']);
             }
         }        
     }
@@ -114,7 +118,8 @@ class Tarea extends Conexion{
         if (!isset($data['token'])) {
             return $response->sendResponse(401);
         } else {
-            if ($auth->checkToken($data['token'])) {
+            $verifyToken = $auth->checkToken($data['token']);
+            if ($verifyToken['status']) {
                 if (!isset($data['id'])) {
                     return $response->sendResponse(400);
                  }else{
@@ -133,7 +138,7 @@ class Tarea extends Conexion{
                      
                  }
             }else{
-                return $response->sendResponse(401);
+                return $response->sendResponse(401, $verifyToken['msg']);
             }
         }    
         
